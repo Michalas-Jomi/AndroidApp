@@ -45,4 +45,8 @@ public class StepsListener implements SensorEventListener {
     public int getCurrentSteps() {
         return steps;
     }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
 }
