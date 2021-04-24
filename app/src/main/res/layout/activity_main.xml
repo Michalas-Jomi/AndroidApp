@@ -9,7 +9,7 @@
     <Button
             android:text="Opcje"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/button2"
+            android:layout_height="wrap_content" android:id="@+id/opcje"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="161dp"
             android:layout_marginStart="161dp" android:layout_marginEnd="162dp" android:layout_marginRight="162dp"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
@@ -22,5 +22,10 @@
             android:layout_marginStart="161dp" android:layout_marginEnd="162dp" android:layout_marginRight="162dp"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="428dp" app:layout_constraintHorizontal_bias="0.0"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/main" android:id="@+id/imageView"
+            tools:layout_editor_absoluteX="0dp" app:layout_constraintBottom_toBottomOf="parent"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
