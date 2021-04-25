@@ -1,4 +1,4 @@
-package me.jomi.androidapp;
+package me.jomi.androidapp.old;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static me.jomi.androidapp.FeedReaderContract.FeedEntry.SQL_DELETE_ENTRIES;
-import static me.jomi.androidapp.FeedReaderContract.FeedEntry.createSql_EntiresAndPlayer;
+import static me.jomi.androidapp.old.FeedReaderContract.FeedEntry.SQL_DELETE_ENTRIES;
+import static me.jomi.androidapp.old.FeedReaderContract.FeedEntry.createSql_EntiresAndPlayer;
 
 
 public class DatabaseManager extends SQLiteOpenHelper {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "583855324233",
+    "project_id": "healthyapp-2a503",
+    "storage_bucket": "healthyapp-2a503.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583855324233:android:3369d9c1be763274685398",
+        "android_client_info": {
+          "package_name": "me.jomi.androidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583855324233-3n4hegmgqjjrsg98q4m2ovcfrhfdouk9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsEk1HpmvEyPQmm6BUWXhMIcoyxtACkrI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583855324233-3n4hegmgqjjrsg98q4m2ovcfrhfdouk9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
