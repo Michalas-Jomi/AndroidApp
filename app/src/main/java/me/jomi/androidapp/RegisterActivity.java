@@ -86,13 +86,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 Toast.makeText(RegisterActivity.this, "Zarejestrowano pomyslnie, aby konto było aktywne potwierdz adres e-mail!", Toast.LENGTH_LONG).show();
                                 FirebaseUser firebaseUser =  FirebaseAuth.getInstance().getCurrentUser();
                                 firebaseUser.sendEmailVerification();
-
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                             }
-                            else Toast.makeText(RegisterActivity.this, "Nie zarejestrowano, wystapil problem", Toast.LENGTH_LONG).show();
                         }
                     });
 
                 }
+                else Toast.makeText(RegisterActivity.this, "Wystąpił problem podczas rejesteracji", Toast.LENGTH_LONG).show();
             }
         });
 

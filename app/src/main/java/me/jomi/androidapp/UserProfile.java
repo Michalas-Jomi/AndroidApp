@@ -1,14 +1,48 @@
 package me.jomi.androidapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import me.jomi.androidapp.api.Api;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
+
+    private Button buttonLogout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ingame);
+        setContentView(R.layout.activity_user_profile);
 
+        buttonLogout = (Button) findViewById(R.id.buttonUserProfileLogout);
+        buttonLogout.setOnClickListener(this);
+
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.buttonUserProfileLogout:
+                AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(Task<Void> task) {
+                        if(task.isSuccessful()){
+                            startActivity(new Intent(UserProfile.this, MainActivity.class));
+                            Toast.makeText(UserProfile.this, "Pomyślnie zostałeś wylogowany", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+        }
     }
 }
