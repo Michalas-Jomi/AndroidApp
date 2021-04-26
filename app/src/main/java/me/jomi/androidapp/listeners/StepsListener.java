@@ -16,7 +16,9 @@ public class StepsListener implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        System.out.println("krok 0: " + event.values[0]);
         if(event.sensor == countSensor) {
+            System.out.println("krok 1: " + event.values[0]);
             steps = (int) event.values[0];
         }
     }

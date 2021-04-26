@@ -24,9 +24,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         buttonLogout = (Button) findViewById(R.id.buttonUserProfileLogout);
         buttonLogout.setOnClickListener(this);
-
-
-
     }
 
     @Override
@@ -36,10 +33,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(Task<Void> task) {
-                        if(task.isSuccessful()){
+                        if(task.isSuccessful()) {
                             startActivity(new Intent(UserProfile.this, MainActivity.class));
                             Toast.makeText(UserProfile.this, "Pomyślnie zostałeś wylogowany", Toast.LENGTH_LONG).show();
-
                         }
                     }
                 });

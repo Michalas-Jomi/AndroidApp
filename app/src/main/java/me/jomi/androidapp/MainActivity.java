@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import me.jomi.androidapp.api.Api;
+import me.jomi.androidapp.util.Checker;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener  {
@@ -48,10 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         editNick = (EditText) findViewById(R.id.editNick);
         editPassword = (EditText) findViewById(R.id.editPassword);
-
-
-
-
     }
 
     //TODO: poprawić gdy krokow jest 0 to update nie dziala, a insert tak, a gdy jest powyzej 0 to insert nie dziala a update dziala xD
@@ -71,28 +68,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonLogin:
                 loginUser();
                 break;
-
         }
     }
     private void loginUser(){
         String email = editNick.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
 
-        if(email.isEmpty()){
-            editNick.setError("email jest wymagany");
-            editNick.requestFocus();
+        try {
+            Checker.checkEditText(!email.isEmpty(),                                 editNick,    "email jest wymagany");
+            Checker.checkEditText(Patterns.EMAIL_ADDRESS.matcher(email).matches(),  editNick,    "Wpisz poprawny email");
+            Checker.checkEditText(!password.isEmpty(),                              editPassword,"Haslo jest wymagane");
+        } catch (IllegalArgumentException e) {
             return;
         }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            editNick.setError("Wpisz poprawny email");
-            editNick.requestFocus();
-            return;
-        }
-        if(password.isEmpty()){
-            editPassword.setError("Haslo jest wymagane");
-            editPassword.requestFocus();
-            return;
-        }
+
 
         Api.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -102,13 +91,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if(user.isEmailVerified()) {
                         Toast.makeText(MainActivity.this, "Udalo sie zalogowac!", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(MainActivity.this, UserProfile.class));
-                    }
-                    else{
+                    } else {
                         user.sendEmailVerification();
                         Toast.makeText(MainActivity.this, "Twoje konto nie zostalo jeszcze zweryfikowane, wyslano adres e-mail!", Toast.LENGTH_LONG).show();
                     }
-                }
-                else Toast.makeText(MainActivity.this, "Nie udalo sie zalogowac, sprawdz dane!", Toast.LENGTH_LONG).show();
+                } else
+                    Toast.makeText(MainActivity.this, "Nie udalo sie zalogowac, sprawdz dane!", Toast.LENGTH_LONG).show();
             }
         });
     }

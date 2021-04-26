@@ -21,8 +21,6 @@ public class ForgotActivity extends AppCompatActivity implements View.OnClickLis
         button.setOnClickListener(this);
 
         email = findViewById(R.id.editTextEmail);
-
-
     }
 
     @Override
