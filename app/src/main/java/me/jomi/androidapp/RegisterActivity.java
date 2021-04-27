@@ -73,28 +73,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onComplete(Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    User user = new User(name, age, email);
-
-                    Api.database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete( Task<Void> task) {
-                            if(task.isSuccessful()) {
-                                Toast.makeText(RegisterActivity.this, "Zarejestrowano pomyslnie, aby konto było aktywne potwierdz adres e-mail!", Toast.LENGTH_LONG).show();
-                                FirebaseUser firebaseUser =  FirebaseAuth.getInstance().getCurrentUser();
-                                firebaseUser.sendEmailVerification();
-                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                            } else
-                                Toast.makeText(RegisterActivity.this, "Wystąpił problem podczas rejesteracji", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    Toast.makeText(RegisterActivity.this, "Zarejestrowano pomyslnie, aby konto było aktywne potwierdz adres e-mail!", Toast.LENGTH_LONG).show();
+                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
                 } else
                     Toast.makeText(RegisterActivity.this, "Wystąpił problem podczas rejesteracji", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public void test(){
-
-    }
 }

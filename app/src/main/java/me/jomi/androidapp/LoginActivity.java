@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import me.jomi.androidapp.api.Api;
+import me.jomi.androidapp.util.Checker;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -138,20 +139,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void loginUser(){
         String email = editNick.getText().toString().trim();
         String password = editPassword.getText().toString().trim();
-
-        if(email.isEmpty()){
-            editNick.setError("Email jest wymagany!");
-            editNick.requestFocus();
-            return;
-        }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            editNick.setError("Wpisz poprawny email!");
-            editNick.requestFocus();
-            return;
-        }
-        if(password.isEmpty()){
-            editPassword.setError("Hasło jest wymagane!");
-            editPassword.requestFocus();
+        try {
+            Checker.checkEditText(!email.isEmpty(), editNick, "Email jest wymagany");
+            Checker.checkEditText(Patterns.EMAIL_ADDRESS.matcher(email).matches(), editNick, "Niepoprawny format adresu e-mail");
+            Checker.checkEditText(!password.isEmpty(), editPassword, "Hasło jest wymagane");
+        }catch (IllegalArgumentException e){
             return;
         }
 
