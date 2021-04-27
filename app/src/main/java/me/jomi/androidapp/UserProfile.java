@@ -37,9 +37,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     @Override
                     public void onComplete(Task<Void> task) {
                         if(task.isSuccessful()){
-                            startActivity(new Intent(UserProfile.this, MainActivity.class));
                             Toast.makeText(UserProfile.this, "Pomyślnie zostałeś wylogowany", Toast.LENGTH_LONG).show();
-
                         }
                     }
                 });

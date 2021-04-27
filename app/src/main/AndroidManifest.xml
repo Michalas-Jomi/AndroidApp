@@ -11,12 +11,14 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+
         <activity
                 android:name=".RegisterActivity"
                 android:label="@string/title_activity_login">
         </activity>
         <activity android:name=".UserProfile"/>
         <activity android:name=".ForgotActivity"/>
+        <activity android:name=".LoginActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

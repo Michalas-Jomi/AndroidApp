@@ -3,7 +3,22 @@
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                                    xmlns:tools="http://schemas.android.com/tools"
                                                    android:layout_width="match_parent"
-                                                   android:layout_height="match_parent">
+                                                   android:layout_height="match_parent"
+                                                   tools:context=".MainActivity">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent" />
+
 
     <TextView
             android:text="Otherkey"
@@ -18,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="email"
             android:ems="10"
             android:id="@+id/editNick"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +40,9 @@
             android:layout_marginLeft="83dp" android:layout_marginStart="83dp"
             app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="450dp"
             android:layout_marginEnd="115dp" android:layout_marginRight="115dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/Widget.AppCompat.Light.AutoCompleteTextView" android:fontFamily="sans-serif"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,13 +57,14 @@
             app:layout_constraintEnd_toEndOf="parent"/>
     <Button
             android:text="Zaloguj sie"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/buttonLogin"
+            android:layout_width="96dp"
+            android:layout_height="55dp" android:id="@+id/buttonLogin"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="268dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="304dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginLeft="130dp" android:layout_marginStart="130dp" android:layout_marginEnd="172dp"
             android:layout_marginRight="172dp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"/>
+            app:layout_constraintHorizontal_bias="1.0" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="379dp" app:layout_constraintVertical_bias="0.0"/>
     <TextView
             android:text="Zarejestruj"
             android:layout_width="81dp"
@@ -66,4 +83,17 @@
             android:layout_marginLeft="221dp" android:layout_marginStart="221dp"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="489dp" android:layout_marginEnd="66dp"
             android:layout_marginRight="66dp" app:layout_constraintEnd_toEndOf="parent"/>
+    <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_signIn"
+            android:layout_width="144dp"
+            android:layout_height="46dp"
+            android:text="Text"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:textSize="18sp" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="612dp" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="342dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="16dp" android:layout_marginStart="16dp" android:layout_marginEnd="257dp"
+            android:layout_marginRight="257dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="0.814"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,9 +30,7 @@ public class ForgotActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()){
             case R.id.buttonForgot:
                 if(email.getText().toString().trim().isEmpty()) return;
-
                 Api.auth.sendPasswordResetEmail(email.getText().toString().trim());
-
                 break;
         }
     }

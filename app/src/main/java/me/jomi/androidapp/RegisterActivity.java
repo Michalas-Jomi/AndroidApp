@@ -3,6 +3,7 @@ package me.jomi.androidapp;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -10,11 +11,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.*;
 import com.google.firebase.database.FirebaseDatabase;
 import me.jomi.androidapp.api.Api;
 import me.jomi.androidapp.model.User;
@@ -26,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonRegister;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +43,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         buttonRegister.setOnClickListener(this);
 
 
-
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bannerOtherKey:
                 startActivity(new Intent(this, MainActivity.class));
                 break;
@@ -54,19 +58,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private void registerUser(){
+
+
+    private void registerUser() {
         final String email = editTextEmail.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
         final String name = editTextName.getText().toString().trim();
         final String age = editTextAge.getText().toString().trim();
 
-        if(email.isEmpty() || password.isEmpty() || name.isEmpty() || age.isEmpty()){
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty() || age.isEmpty()) {
             editTextName.setError("Musisz wypełnić wszystkie kolumny!");
             editTextName.requestFocus();
             return;
 
         }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Zly format adresu e-mail!");
             editTextEmail.requestFocus();
             return;
@@ -74,31 +80,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         Api.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    User user = new User(name, age, email);
-
-
-                    Api.database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete( Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(RegisterActivity.this, "Zarejestrowano pomyslnie, aby konto było aktywne potwierdz adres e-mail!", Toast.LENGTH_LONG).show();
-                                FirebaseUser firebaseUser =  FirebaseAuth.getInstance().getCurrentUser();
-                                firebaseUser.sendEmailVerification();
-                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                            }
-                        }
-                    });
-
-                }
-                else Toast.makeText(RegisterActivity.this, "Wystąpił problem podczas rejesteracji", Toast.LENGTH_LONG).show();
+                if (task.isSuccessful()) {
+                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                    Toast.makeText(MainActivity.instance, "Udało się zarejestrować! Potwierdź adres e-mail aby kontynuować!", Toast.LENGTH_LONG).show();
+                } else
+                    Toast.makeText(RegisterActivity.this, "Wystąpił problem podczas rejestracji", Toast.LENGTH_LONG).show();
             }
         });
 
     }
 
-    public void test(){
+    /*
+                        User user = new User(name, age, email);
+                        Api.database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterActivity.this, "Zarejestrowano pomyslnie, aby konto było aktywne potwierdz adres e-mail!", Toast.LENGTH_LONG).show();
+                                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                firebaseUser.sendEmailVerification();
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            }
+                        }
+                    });
+     */
 
-    }
 }
