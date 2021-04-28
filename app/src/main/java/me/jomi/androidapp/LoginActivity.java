@@ -108,7 +108,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void createGoogleRequest() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("583855324233-3n4hegmgqjjrsg98q4m2ovcfrhfdouk9.apps.googleusercontent.com")
+               //.requestIdToken("583855324233-3n4hegmgqjjrsg98q4m2ovcfrhfdouk9.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 

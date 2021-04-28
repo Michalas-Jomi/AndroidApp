@@ -31,6 +31,7 @@ public class StepsListener implements SensorEventListener {
     public void registerStepSensor(){
        MainActivity mainActivity = MainActivity.instance;
         sensorManager = (SensorManager)  mainActivity.getSystemService(Context.SENSOR_SERVICE);
+
         countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if(countSensor != null){
             sensorManager.registerListener(new StepsListener(), countSensor, SensorManager.SENSOR_DELAY_UI);
@@ -44,7 +45,7 @@ public class StepsListener implements SensorEventListener {
         return sensorManager;
     }
 
-    public int getCurrentSteps() {
+    public int getSessionSteps() {
         return steps;
     }
 

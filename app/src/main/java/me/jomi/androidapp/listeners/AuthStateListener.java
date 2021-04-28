@@ -45,8 +45,6 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
         }
         else
             MainActivity.instance.startActivity(new Intent(MainActivity.instance, LoginActivity.class));
-
-
     }
 
     private void greetings(){

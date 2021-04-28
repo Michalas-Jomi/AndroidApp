@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "583855324233",
+    "firebase_url": "https://healthyapp-2a503-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "healthyapp-2a503",
     "storage_bucket": "healthyapp-2a503.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "583855324233-he4cs6n4603cn61qo5s4d5kjopf5rj30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.jomi.androidapp",
+            "certificate_hash": "bfb223f026dfce7f005b132755ff80d02ff92781"
+          }
+        },
         {
           "client_id": "583855324233-3n4hegmgqjjrsg98q4m2ovcfrhfdouk9.apps.googleusercontent.com",
           "client_type": 3
