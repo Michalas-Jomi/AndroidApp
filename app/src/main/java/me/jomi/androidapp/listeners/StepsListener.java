@@ -13,6 +13,7 @@ public class StepsListener implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor countSensor;
     private int steps = 0;
+    private boolean registered = false;
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -29,16 +30,19 @@ public class StepsListener implements SensorEventListener {
     }
 
     public void registerStepSensor(){
+        if(registered) return;
+
        MainActivity mainActivity = MainActivity.instance;
         sensorManager = (SensorManager)  mainActivity.getSystemService(Context.SENSOR_SERVICE);
-
         countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if(countSensor != null){
-            sensorManager.registerListener(new StepsListener(), countSensor, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+            registered = true;
             Toast.makeText(mainActivity, "Sensor kroków wykryty", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(mainActivity, "brak sensora", Toast.LENGTH_LONG).show();
         }
+
     }
 
     public SensorManager getSensorManager() {
@@ -51,5 +55,10 @@ public class StepsListener implements SensorEventListener {
 
     public void setSteps(int steps) {
         this.steps = steps;
+    }
+
+    public void unregisterListener(){
+        sensorManager.unregisterListener(this);
+        registered = false;
     }
 }

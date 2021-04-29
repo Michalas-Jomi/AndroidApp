@@ -5,13 +5,15 @@
                                                    android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
     <Button
-            android:layout_width="208dp"
-            android:layout_height="87dp" android:id="@+id/button2" tools:layout_editor_absoluteY="233dp"
+            android:layout_width="206dp"
+            android:layout_height="83dp" android:id="@+id/button2" tools:layout_editor_absoluteY="206dp"
             android:src="@drawable/button"
-            tools:layout_editor_absoluteX="101dp" android:background="@drawable/przyciskzaloguj"/>
+            tools:layout_editor_absoluteX="100dp" android:background="@drawable/przyciskzaloguj"
+            android:contentDescription=" "/>
     <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/button3" tools:layout_editor_absoluteY="396dp"
+            android:layout_height="wrap_content" android:id="@+id/button3" tools:layout_editor_absoluteY="348dp"
             android:src="@drawable/button"
-            tools:layout_editor_absoluteX="108dp" android:background="@drawable/przyciskrejestruj"/>
+            tools:layout_editor_absoluteX="100dp" android:background="@drawable/przyciskrejestruj"
+            android:clickable="true"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
