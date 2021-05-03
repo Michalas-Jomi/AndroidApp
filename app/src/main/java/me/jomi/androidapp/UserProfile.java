@@ -29,35 +29,40 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_user_profile);
+
         ActivityCompat.requestPermissions(this, new String[]{"com.google.android.gms.permission.ACTIVITY_RECOGNITION", Manifest.permission.ACTIVITY_RECOGNITION}, PERMISSION_STEPS);
         //ActivityCompat.requestPermissions(this, new String[]{}, PERMISSION_STEPS);
+
         buttonLogout = findViewById(R.id.buttonUserProfileLogout);
         buttonLogout.setOnClickListener(this);
+
         checkLocation = findViewById(R.id.checkLocation);
         checkLocation.setOnClickListener(this);
+
         locSwitch = findViewById(R.id.simpleSwitch);
+
         locCoords = findViewById(R.id.locCoordText);
+
         locSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(locSwitch.isChecked()){
+                if(locSwitch.isChecked()) {
                     if (ContextCompat.checkSelfPermission(UserProfile.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
                         locSwitch.setChecked(false);
                         ActivityCompat.requestPermissions(UserProfile.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-                    }
-                    else {
+                    } else {
                         locListener.registerListener();
+                        if (!locListener.isEnabled())
+                            locSwitch.setChecked(false);
                     }
-                }
-                else {
+                } else {
                     locListener.unregisterListener();
                 }
             }
         });
-        if(locListener.isEnabled()){
-            locSwitch.setChecked(true);
-        }
+        locSwitch.setChecked(locListener.isEnabled());
     }
 //uzywa sie, gdy po prostu mamy permisje i tyle
     @Override

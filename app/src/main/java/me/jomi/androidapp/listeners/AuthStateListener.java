@@ -35,7 +35,7 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
             MainActivity.instance.startActivity(new Intent(MainActivity.instance, UserProfile.class));
             MainActivity.instance.finish(); // niszczy instancje, nie mozna juz do niej wrocic.
 
-            Api.database.getReference().child("users").child(Api.auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(Task<DataSnapshot> task) {
                     if(task.isSuccessful()){
@@ -51,7 +51,7 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
     }
 
     private void greetings(){
-        Api.database.getReference().child("Users").child(Api.auth.getCurrentUser().getUid()).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        Api.getUser().child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(Task<DataSnapshot> task) {
                 if(task.isSuccessful()){

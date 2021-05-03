@@ -29,7 +29,7 @@ public class LocListener implements LocationListener {
     public void onLocationChanged(final Location location) {
         final double currentLatitude = location.getLatitude();
         final double currentLongitude = location.getLongitude();
-        UserProfile.locCoords.setText(currentLatitude + "\n" + currentLatitude);
+        UserProfile.locCoords.setText(currentLatitude + "\n" + currentLongitude);
         final double[] lastLatitude = new double[1];
         final double[] lastLongitude = new double[1];
 
@@ -37,7 +37,7 @@ public class LocListener implements LocationListener {
             case RUNNING:
 
             case BIKING:
-                Api.database.getReference().child("users").child(Api.auth.getCurrentUser().getUid()).child("location").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                Api.getUser().child("location").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(Task<DataSnapshot> task) {
                         if(task.isSuccessful()) {
@@ -45,15 +45,13 @@ public class LocListener implements LocationListener {
                                 if (data.getKey().equals("latitude")) lastLatitude[0] = data.getValue(Double.class);
                                 else lastLongitude[0] = data.getValue(Double.class);
 
-                            Api.database.getReference().child("users").child(Api.auth.getCurrentUser().getUid()).child("location")
-                                    .setValue(new me.jomi.androidapp.model.Location(currentLatitude, currentLongitude));
+                            Api.getUser().child("location").setValue(new me.jomi.androidapp.model.Location(currentLatitude, currentLongitude));
 
                             if(lastLatitude[0] == 0 && lastLongitude[0] == 0) return;
 
-                            float changedDistance = distFrom((float) currentLatitude, (float) currentLongitude, (float)lastLatitude[0], (float) lastLongitude[0]);
+                            float changedDistance = distFrom((float) currentLatitude, (float) currentLongitude, (float) lastLatitude[0], (float) lastLongitude[0]);
                             UserProfile.locCoords.setText(currentLatitude + "\n" + currentLongitude + "\n" + changedDistance);
                             System.out.println(changedDistance);;
-
                         }
                     }
                 });
@@ -78,14 +76,13 @@ public class LocListener implements LocationListener {
 
    @SuppressLint("MissingPermission")
    public void registerListener(){
-        if(isEnabled) return;
-       locationManager = (LocationManager) MainActivity.instance.getSystemService(Context.LOCATION_SERVICE);
-       if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+       if (isEnabled) return;
 
+       locationManager = (LocationManager) MainActivity.instance.getSystemService(Context.LOCATION_SERVICE);
+       if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, locListener);
            isEnabled = true;
-       }
-       else{
+       } else {
            Toast.makeText(MainActivity.instance, "Wlacz GPS!", Toast.LENGTH_SHORT).show();
            MainActivity.instance.startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
        }

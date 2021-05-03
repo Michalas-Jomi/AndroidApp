@@ -60,30 +60,19 @@ public class StepsListener implements SensorEventListener {
         MainActivity mainActivity = MainActivity.instance;
         sensorManager = (SensorManager)  mainActivity.getSystemService(Context.SENSOR_SERVICE);
 
-
-
-        // Zwykły
-        countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if(countSensor != null) {
-            registered = true;
-            sensorType = Sensor.TYPE_STEP_COUNTER;
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
-            Toast.makeText(mainActivity, "Sensor kroków wykryty", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        // Akcelerometr
-        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if ((countSensor =  registerStepSensor(Sensor.TYPE_STEP_COUNTER,  SensorManager.SENSOR_DELAY_UI,     "Sensor kroków wykryty"))  != null) return; // Zwykły
+        if (                registerStepSensor(Sensor.TYPE_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL, "Akcelerometr wykryty")    != null) return; // Akcelerometr
+        Toast.makeText(mainActivity, "brak sensora", Toast.LENGTH_LONG).show(); // Brak sensora
+    }
+    private Sensor registerStepSensor(int type, int samplingPeriodUs, String msg) {
+        Sensor sensor = sensorManager.getDefaultSensor(type);
         if (sensor != null) {
             registered = true;
-            sensorType = Sensor.TYPE_ACCELEROMETER;
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-            Toast.makeText(mainActivity, "Akcelerometr wykryty", Toast.LENGTH_LONG).show();
-            return;
+            sensorType = type;
+            sensorManager.registerListener(this, countSensor, samplingPeriodUs);
+            Toast.makeText(MainActivity.instance, msg, Toast.LENGTH_LONG).show();
         }
-
-        // Brak sensora
-        Toast.makeText(mainActivity, "brak sensora", Toast.LENGTH_LONG).show();
+        return sensor;
     }
 
 
