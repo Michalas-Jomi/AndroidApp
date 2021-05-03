@@ -4,7 +4,7 @@ import android.widget.EditText;
 
 public class Checker {
     /**
-     * Sprawdza czy test jest prawdziwy, jeśli nie wyrzuci IllefalArgumentException
+     * Sprawdza czy test jest prawdziwy, jeśli nie wyrzuci IllegalArgumentException
      *
      * @param test warunek który powinien być spełniony
      * @param view View na który będzie rzucany focus i error

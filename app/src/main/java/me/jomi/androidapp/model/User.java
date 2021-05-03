@@ -2,25 +2,20 @@ package me.jomi.androidapp.model;
 
 public class User {
 
-    private String name;
-    private String age;
-    private String email;
+    private float energy;
+    private Location location;
 
-    public User(String name, String age, String email) {
-        this.name = name;
-        this.age = age;
-        this.email = email;
+    public User(float energy, Location location) {
+        this.energy = energy;
+        this.location = location;
+
     }
 
-    public String getName() {
-        return name;
+    public float getEnergy() {
+        return energy;
     }
 
-    public String getAge() {
-        return age;
-    }
-
-    public String getEmail() {
-        return email;
+    public Location getLocation() {
+        return location;
     }
 }

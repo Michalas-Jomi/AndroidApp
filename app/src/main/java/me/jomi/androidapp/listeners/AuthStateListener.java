@@ -15,6 +15,8 @@ import me.jomi.androidapp.LoginActivity;
 import me.jomi.androidapp.MainActivity;
 import me.jomi.androidapp.UserProfile;
 import me.jomi.androidapp.api.Api;
+import me.jomi.androidapp.model.Location;
+import me.jomi.androidapp.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +35,13 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
             MainActivity.instance.startActivity(new Intent(MainActivity.instance, UserProfile.class));
             MainActivity.instance.finish(); // niszczy instancje, nie mozna juz do niej wrocic.
 
-            Api.database.getReference().child("Users").child(Api.auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            Api.database.getReference().child("users").child(Api.auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(Task<DataSnapshot> task) {
                     if(task.isSuccessful()){
-                        if(task.getResult().exists()) System.out.println("istnieje w bazie - nie tworzymy uzytkownika");
-                        else System.out.println("nie istnieje w bazie - tworzymy dane usera");
+                        if(!task.getResult().exists())
+                            Api.database.getReference().child("users").child(Api.auth.getCurrentUser().getUid())
+                                    .setValue(new User(0, new Location((double) 0, (double) 0)));
                     }
                 }
             });
