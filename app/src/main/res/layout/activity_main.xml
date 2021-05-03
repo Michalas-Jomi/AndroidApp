@@ -25,64 +25,57 @@
             android:layout_width="128dp"
             android:layout_height="46dp" android:id="@+id/textView3"
             android:textSize="30sp" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="103dp" app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="582dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="130dp" android:layout_marginStart="130dp" android:layout_marginEnd="153dp"
-            android:layout_marginRight="153dp" app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            android:layout_marginTop="96dp" app:layout_constraintBottom_toTopOf="@+id/editNick"
+            app:layout_constraintVertical_bias="0.225"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/editNick"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="236dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="83dp" android:layout_marginStart="83dp"
-            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="450dp"
-            android:layout_marginEnd="115dp" android:layout_marginRight="115dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/Widget.AppCompat.Light.AutoCompleteTextView" android:fontFamily="sans-serif"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintBottom_toTopOf="@+id/editPassword" android:layout_marginBottom="28dp"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/editPassword"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="315dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="82dp" android:layout_marginStart="82dp"
-            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="371dp"
-            android:layout_marginEnd="116dp" android:layout_marginRight="116dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/buttonLogin" android:layout_marginBottom="44dp"
+            app:layout_constraintHorizontal_bias=".5"/>
     <Button
             android:text="Zaloguj sie"
             android:layout_width="96dp"
             android:layout_height="55dp" android:id="@+id/buttonLogin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="304dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="130dp" android:layout_marginStart="130dp" android:layout_marginEnd="172dp"
-            android:layout_marginRight="172dp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="379dp" app:layout_constraintVertical_bias="0.0"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias=".6"/>
     <TextView
             android:text="Zarejestruj"
             android:layout_width="81dp"
             android:layout_height="22dp" android:id="@+id/textViewRegister"
-            android:layout_marginEnd="277dp" android:layout_marginRight="277dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="220dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="53dp" android:layout_marginStart="53dp" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="489dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttonLogin" android:layout_marginTop="60dp"
+            android:layout_marginLeft="76dp" android:layout_marginStart="76dp"/>
     <TextView
             android:text="Przypomnij hasło"
             android:layout_width="124dp"
             android:layout_height="20dp" android:id="@+id/textViewRemind"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="222dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="221dp" android:layout_marginStart="221dp"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="489dp" android:layout_marginEnd="66dp"
-            android:layout_marginRight="66dp" app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintStart_toEndOf="@+id/textViewRegister"
+            android:layout_marginLeft="80dp" android:layout_marginStart="80dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/textViewRegister"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewRegister" app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"/>
     <com.google.android.gms.common.SignInButton
             android:id="@+id/google_signIn"
             android:layout_width="144dp"
@@ -90,10 +83,10 @@
             android:text="Text"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"
-            android:textSize="18sp" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="612dp" app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="342dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="16dp" android:layout_marginStart="16dp" android:layout_marginEnd="257dp"
-            android:layout_marginRight="257dp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="0.814"/>
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.218"
+            app:layout_constraintTop_toBottomOf="@+id/textViewRegister"
+            app:layout_constraintHorizontal_bias="0.247" app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

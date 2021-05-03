@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 Toast.makeText(LoginActivity.this, "Wystąpił problem podczas logowania", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
                 // Google Sign In failed, update UI appropriately
                 //    Log.w(TAG, "Google sign in failed", e);
             }

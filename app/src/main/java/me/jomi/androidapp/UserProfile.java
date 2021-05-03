@@ -4,11 +4,9 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +22,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private Button buttonLogout;
     private Button checkLocation;
     private Switch locSwitch;
+    public static TextView locCoords;
     private static final int PERMISSION_LOCATION = 1001;
     private static final int PERMISSION_STEPS = 1000;
     public static UserActivity userActivity = UserActivity.BIKING;
@@ -31,19 +30,21 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, PERMISSION_STEPS);
+        ActivityCompat.requestPermissions(this, new String[]{"com.google.android.gms.permission.ACTIVITY_RECOGNITION", Manifest.permission.ACTIVITY_RECOGNITION}, PERMISSION_STEPS);
+        //ActivityCompat.requestPermissions(this, new String[]{}, PERMISSION_STEPS);
         buttonLogout = findViewById(R.id.buttonUserProfileLogout);
         buttonLogout.setOnClickListener(this);
         checkLocation = findViewById(R.id.checkLocation);
         checkLocation.setOnClickListener(this);
         locSwitch = findViewById(R.id.simpleSwitch);
+        locCoords = findViewById(R.id.locCoordText);
         locSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(locSwitch.isChecked()){
                     if (ContextCompat.checkSelfPermission(UserProfile.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
                         locSwitch.setChecked(false);
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+                        ActivityCompat.requestPermissions(UserProfile.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
                     }
                     else {
                         locListener.registerListener();
@@ -100,8 +101,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void requestLocationPermissions() {
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
     }
+
 
 
 

@@ -25,5 +25,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" tools:layout_editor_absoluteY="16dp"
             tools:layout_editor_absoluteX="16dp"/>
+    <TextView
+            android:text="TextView"
+            android:layout_width="213dp"
+            android:layout_height="224dp" android:id="@+id/locCoordText"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/checkLocation" android:textSize="14sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

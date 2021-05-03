@@ -29,6 +29,7 @@ public class LocListener implements LocationListener {
     public void onLocationChanged(final Location location) {
         final double currentLatitude = location.getLatitude();
         final double currentLongitude = location.getLongitude();
+        UserProfile.locCoords.setText(currentLatitude + "\n" + currentLatitude);
         final double[] lastLatitude = new double[1];
         final double[] lastLongitude = new double[1];
 
@@ -50,6 +51,7 @@ public class LocListener implements LocationListener {
                             if(lastLatitude[0] == 0 && lastLongitude[0] == 0) return;
 
                             float changedDistance = distFrom((float) currentLatitude, (float) currentLongitude, (float)lastLatitude[0], (float) lastLongitude[0]);
+                            UserProfile.locCoords.setText(currentLatitude + "\n" + currentLongitude + "\n" + changedDistance);
                             System.out.println(changedDistance);;
 
                         }

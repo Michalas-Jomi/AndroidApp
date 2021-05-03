@@ -18,9 +18,9 @@ public class ForgotActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_forgotpassword);
 
         button = findViewById(R.id.buttonForgot);
-        button.setOnClickListener(this);
 
         email = findViewById(R.id.editTextEmail);
+        button.setOnClickListener(this);
     }
 
     @Override

@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "583855324233-2orgppuh3lspui9fd5a51su0lqu8fut8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.jomi.androidapp",
+            "certificate_hash": "568fd85f1c29a7ab42151af697ab71396c999164"
+          }
+        },
+        {
+          "client_id": "583855324233-he4cs6n4603cn61qo5s4d5kjopf5rj30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.jomi.androidapp",
+            "certificate_hash": "bfb223f026dfce7f005b132755ff80d02ff92781"
+          }
+        },
+        {
           "client_id": "583855324233-3n4hegmgqjjrsg98q4m2ovcfrhfdouk9.apps.googleusercontent.com",
           "client_type": 3
         }
