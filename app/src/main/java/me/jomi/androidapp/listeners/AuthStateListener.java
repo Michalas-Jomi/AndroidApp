@@ -73,7 +73,7 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
         MainActivity.instance.finish(); // niszczy instancje, nie mozna juz do niej wrocic.
         if(databaseChangeListener == null){
             databaseChangeListener = new DatabaseChangeListener();
-            Api.getUser().addValueEventListener(databaseChangeListener);
+            databaseChangeListener.register();
         }
     }
 }

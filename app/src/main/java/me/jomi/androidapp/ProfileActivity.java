@@ -34,9 +34,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     ImageView realActivityView;
 
 
+    static ProfileActivity instance;
+    public static ProfileActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        instance = this;
 
         setContentView(R.layout.activity_profile);
 
@@ -59,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         if (v.getId() == shopView.getId()) {
-            // TODO shop
+            startActivity(new Intent(this, ClothesShopActivity.class));
         } else if (v.getId() == gamesView.getId()) {
             // TODO games
         } else if (v.getId() == realActivityView.getId()) {
@@ -68,7 +75,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             System.err.println("Nieznane View w ProfileActivity " + v);
         }
     }
-
 
 
     public void refreshAll() {
@@ -84,25 +90,33 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
     private void refreshAll(User user) {
-        moneyView.setText("Monety: " + user.getMoney());
-        energyView.setText("Energia: " + user.getEnergy());
+        refreshMoney(user.getMoney());
+        refreshEnergy(user.getEnergy());
         dressUp(user.getClothes());
     }
     public void refreshMoney() {
         refresh(moneyView, "Monety", "money", int.class);
     }
+    public void refreshMoney(int money) {
+        refresh(moneyView, "Monety", money);
+    }
     public void refreshEnergy() {
         refresh(energyView, "Energia", "energy", float.class);
+    }
+    public void refreshEnergy(float energy) {
+        refresh(energyView, "Energia", energy);
     }
     private void refresh(final TextView view, final String prefix, String child, final Class<?> clazz) {
         Api.getUser().child(child).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    view.setText(prefix + ": " + task.getResult().getValue(clazz));
-                }
+                if (task.isSuccessful())
+                    refresh(view, prefix, task.getResult().getValue(clazz));
             }
         });
+    }
+    private void refresh(TextView view, String prefix, Object value) {
+        view.setText(prefix + ": " + value);
     }
 
 
