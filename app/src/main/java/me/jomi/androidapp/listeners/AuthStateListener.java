@@ -2,6 +2,7 @@ package me.jomi.androidapp.listeners;
 
 import android.content.Intent;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +18,9 @@ import me.jomi.androidapp.model.Location;
 import me.jomi.androidapp.model.User;
 
 public class AuthStateListener implements FirebaseAuth.AuthStateListener {
+
+    public static DatabaseChangeListener databaseChangeListener;
+
     @Override
     public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -27,15 +31,24 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
         }
 
         if (user != null && user.isEmailVerified()) {
-            MainActivity.instance.startActivity(new Intent(MainActivity.instance, ProfileActivity.class));
-            MainActivity.instance.finish(); // niszczy instancje, nie mozna juz do niej wrocic.
+
 
             Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(Task<DataSnapshot> task) {
                     if(task.isSuccessful()){
+
                         if(!task.getResult().exists())
-                            Api.getUser().setValue(new User(0, 100, new Location((double) 0, (double) 0), new Clothes(0, 0)));
+                            Api.getUser().setValue(new User(0, 100, new Location((double) 0, (double) 0), new Clothes(0, 0)))
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(Task<Void> task) {
+                                            startMain();
+                                        }
+                                    });
+                        else {
+                            startMain();
+                        }
                     }
                 }
             });
@@ -53,5 +66,14 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
                 }
             }
         });
+    }
+
+    private void startMain(){
+        MainActivity.instance.startActivity(new Intent(MainActivity.instance, ProfileActivity.class));
+        MainActivity.instance.finish(); // niszczy instancje, nie mozna juz do niej wrocic.
+        if(databaseChangeListener == null){
+            databaseChangeListener = new DatabaseChangeListener();
+            Api.getUser().addValueEventListener(databaseChangeListener);
+        }
     }
 }

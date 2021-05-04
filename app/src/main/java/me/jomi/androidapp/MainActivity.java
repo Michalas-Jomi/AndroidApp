@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import me.jomi.androidapp.api.Api;
 import me.jomi.androidapp.listeners.AuthStateListener;
+import me.jomi.androidapp.listeners.DatabaseChangeListener;
 import me.jomi.androidapp.listeners.LocListener;
 import me.jomi.androidapp.listeners.StepsListener;
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity  {
         locListener = new LocListener();
         stepsListener = new StepsListener();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
 
 /*
         Api.database.getReference().child("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
