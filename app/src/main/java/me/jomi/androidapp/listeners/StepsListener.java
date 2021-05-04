@@ -13,7 +13,6 @@ import java.util.List;
 public class StepsListener implements SensorEventListener {
 
     private SensorManager sensorManager;
-    private Sensor countSensor;
     private int steps = 0;
     private boolean registered = false;
 
@@ -24,9 +23,7 @@ public class StepsListener implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         switch (sensorType) {
             case Sensor.TYPE_STEP_COUNTER:
-                if(event.sensor == countSensor) {
-                    steps = (int) event.values[0];
-                }
+                steps = (int) event.values[0];
                 break;
             case Sensor.TYPE_ACCELEROMETER:
                 if (event != null){
@@ -60,8 +57,8 @@ public class StepsListener implements SensorEventListener {
         MainActivity mainActivity = MainActivity.instance;
         sensorManager = (SensorManager)  mainActivity.getSystemService(Context.SENSOR_SERVICE);
 
-        if ((countSensor =  registerStepSensor(Sensor.TYPE_STEP_COUNTER,  SensorManager.SENSOR_DELAY_UI,     "Sensor kroków wykryty"))  != null) return; // Zwykły
-        if (                registerStepSensor(Sensor.TYPE_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL, "Akcelerometr wykryty")    != null) return; // Akcelerometr
+        if (registerStepSensor(Sensor.TYPE_STEP_COUNTER,  SensorManager.SENSOR_DELAY_UI,     "Sensor kroków wykryty")  != null) return; // Zwykły
+        if (registerStepSensor(Sensor.TYPE_ACCELEROMETER, SensorManager.SENSOR_DELAY_NORMAL, "Akcelerometr wykryty")   != null) return; // Akcelerometr
         Toast.makeText(mainActivity, "brak sensora", Toast.LENGTH_LONG).show(); // Brak sensora
     }
     private Sensor registerStepSensor(int type, int samplingPeriodUs, String msg) {
@@ -69,7 +66,7 @@ public class StepsListener implements SensorEventListener {
         if (sensor != null) {
             registered = true;
             sensorType = type;
-            sensorManager.registerListener(this, countSensor, samplingPeriodUs);
+            sensorManager.registerListener(this, sensor, samplingPeriodUs);
             Toast.makeText(MainActivity.instance, msg, Toast.LENGTH_LONG).show();
         }
         return sensor;
