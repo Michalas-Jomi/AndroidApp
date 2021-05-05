@@ -2,5 +2,5 @@ package me.jomi.androidapp.model;
 
 public enum UserActivity {
 
-    NONE, BIKING, RUNNING,
+    NONE, RUNNING, SWIMMING, CYCLING, FOOTBALL
 }

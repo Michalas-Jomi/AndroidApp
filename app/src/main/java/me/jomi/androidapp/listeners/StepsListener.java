@@ -38,7 +38,7 @@ public class StepsListener implements SensorEventListener {
 
                     if (MagnitudeDelta > 5){
                         steps++;
-                        if(steps%100 == 0 && steps != 0) Energy.addEnergy(steps * 0.0001f);
+                        if(steps%100 == 0 && steps != 0) Energy.addEnergy(steps * 0.001f);
                     }
               //      System.out.println(steps);
                 }
