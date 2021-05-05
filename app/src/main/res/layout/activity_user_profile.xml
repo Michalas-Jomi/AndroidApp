@@ -4,6 +4,22 @@
                                                    xmlns:tools="http://schemas.android.com/tools"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
+    <TextView
+            android:text="Gra w piłkę"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/user_football_textview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.846" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.036"/>
+    <TextView
+            android:text="Bieganie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/user_running_textview"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.036"
+            app:layout_constraintEnd_toEndOf="@+id/user_running_switch"
+            app:layout_constraintStart_toStartOf="@+id/user_running_switch"/>
     <Switch
             android:id="@+id/user_football_switch"
             android:layout_width="wrap_content"
@@ -11,7 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.112" app:layout_constraintVertical_bias="0.319"/>
+            app:layout_constraintHorizontal_bias="0.822" app:layout_constraintVertical_bias="0.076"/>
     <Switch
             android:id="@+id/user_running_switch"
             android:layout_width="wrap_content"
@@ -19,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.11" app:layout_constraintVertical_bias="0.062"/>
+            app:layout_constraintHorizontal_bias="0.155" app:layout_constraintVertical_bias="0.076"/>
     <Switch
             android:id="@+id/user_cycling_switch"
             android:layout_width="wrap_content"
@@ -27,6 +43,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.112" app:layout_constraintVertical_bias="0.143"/>
+            app:layout_constraintHorizontal_bias="0.465" app:layout_constraintVertical_bias="0.076"/>
+    <TextView
+            android:text="Jazda na rowerze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/user_cycling_textview"
+            app:layout_constraintEnd_toEndOf="@+id/user_cycling_switch"
+            app:layout_constraintStart_toStartOf="@+id/user_cycling_switch"
+            app:layout_constraintHorizontal_bias="0.46" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.036"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

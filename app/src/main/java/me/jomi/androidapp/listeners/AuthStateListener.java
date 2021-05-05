@@ -32,7 +32,6 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
 
         if (user != null && user.isEmailVerified()) {
 
-
             Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(Task<DataSnapshot> task) {
@@ -57,16 +56,6 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
             MainActivity.instance.startActivity(new Intent(MainActivity.instance, LoginActivity.class));
     }
 
-    private void greetings(){
-        Api.getUser().child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(MainActivity.instance, "Hej " + task.getResult().getValue(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
 
     private void startMain(){
         MainActivity.instance.startActivity(new Intent(MainActivity.instance, ProfileActivity.class));
