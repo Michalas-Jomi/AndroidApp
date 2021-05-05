@@ -1,31 +1,33 @@
 package me.jomi.androidapp;
 
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.ActivityCompat;
+import androidx.core.util.Consumer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import me.jomi.androidapp.api.Api;
+import me.jomi.androidapp.listeners.DatabaseChangeListener;
 import me.jomi.androidapp.model.Clothes;
 import me.jomi.androidapp.model.User;
 import me.jomi.androidapp.util.Accessibler;
+import me.jomi.androidapp.util.ViewUtils;
+import me.jomi.androidapp.util.ViewUtils.Connector;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.jomi.androidapp.util.ViewUtils.dp;
+
 public class ClothesShopActivity extends AppCompatActivity {
     public static class Prices {
+        public static int[] cap = {20, 40, 75};
+        public static int[] shirt = {100};
         public static int[] pants = {80, 250};
         public static int[] dress = {1000};
     }
@@ -42,6 +44,7 @@ public class ClothesShopActivity extends AppCompatActivity {
             this.id = id;
         }
         public ClickListener(String category, int id) {
+            // None
             this.category = category;
             this.textView = null;
             this.bypass = true;
@@ -91,7 +94,17 @@ public class ClothesShopActivity extends AppCompatActivity {
         }
     }
 
+
+    // Shop
+    ConstraintLayout mainLayout;
     LinearLayout linearLayout;
+    ScrollView scrollView;
+    TextView moneyView;
+
+    // Hero
+    ConstraintLayout heroLayout;
+    ImageView heroView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,23 +112,44 @@ public class ClothesShopActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_clothes_shop);
 
-        linearLayout = findViewById(R.id.clothesShop_scrol);
+        mainLayout   = findViewById(R.id.clothesShop_mainLayout);
+        scrollView   = findViewById(R.id.clothesShop_ScrollView);
+        linearLayout = findViewById(R.id.clothesShop_scroll);
+        moneyView    = findViewById(R.id.clothesShop_money);
+
+        heroLayout = findViewById(R.id.clothesShop_heroLayout);
+        heroView   = findViewById(R.id.clothesShop_hero_ImageView);
 
         Api.getUser().child("clothes").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)//TODO pozbyć się RequiresApi
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
-                    createIcons(task.getResult().getValue(Clothes.class));
-                }
+                    Clothes clothes = task.getResult().getValue(Clothes.class);
+                    createIcons(clothes);
+                    dressUpHero(clothes);
+                } else
+                    ViewUtils.toast(ClothesShopActivity.this, "Nie udało się otworzyć sklepu");
             }
         });
-
+        Api.getUser().child("money").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful())
+                    refreshMoney(task.getResult().getValue(int.class));
+            }
+        });
+        DatabaseChangeListener.MONEY  .register(this.getClass(), new Consumer<Integer>() { public void accept(Integer money)   { refreshMoney(money);  }});
+        DatabaseChangeListener.CLOTHES.register(this.getClass(), new Consumer<Clothes>() { public void accept(Clothes clothes) { dressUpHero(clothes); }});
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)//TODO pozbyć się RequiresApi
+    public void refreshMoney(int money) {
+        moneyView.setText(String.valueOf(money));
+    }
+
     private void createIcons(Clothes clothes) {
-        for (String category : new String[] {"pants", "dress"}) {
+        for (Field field : Prices.class.getDeclaredFields()) {
+            String category = field.getName();
+
             LinearLayout linearLayout = createScroll();
 
             List<Integer> bought = Accessibler.get(clothes, "bought_" + category);
@@ -123,7 +157,7 @@ public class ClothesShopActivity extends AppCompatActivity {
             int[] prices = Accessibler.getStatic(Prices.class, category);
 
 
-            ImageView noneView = prepare(createImage(R.drawable.none), linearLayout, 150, 150);;
+            ImageView noneView = ViewUtils.prepareToConstraintSet(ViewUtils.createImage(this, R.drawable.none), linearLayout, 150, 150);;
             noneView.setOnClickListener(new ClickListener(category, 0));
 
             for (int i = 1;; i++) {
@@ -139,43 +173,30 @@ public class ClothesShopActivity extends AppCompatActivity {
                 layout.setMinWidth(dp(150)); layout.setMinHeight(dp(170));
                 linearLayout.addView(layout);
 
-                ImageView imageView = prepare(createImage(id), layout, 150, 150);
+                ImageView imageView = ViewUtils.prepareToConstraintSet(ViewUtils.createImage(this, id), layout, 150, 150);
 
-                ImageView coinView = prepare(createImage(R.drawable.moneta), layout, 20, 20);
+                ImageView coinView = ViewUtils.prepareToConstraintSet(ViewUtils.createImage(this, R.drawable.moneta), layout, 20, 20);
 
-                TextView textView = prepare(new TextView(this), layout, 130, 20);
+                TextView textView = ViewUtils.prepareToConstraintSet(new TextView(this), layout, 130, 20);
                 textView.setText(bought.contains(i) ? "Zakupiono" : String.valueOf(prices[i - 1]));
 
                 imageView.setOnClickListener(new ClickListener(category, i, textView));
 
-                ConstraintSet set = new ConstraintSet();
-                set.clone(layout);
-                set.connect(coinView.getId(), ConstraintSet.TOP, imageView.getId(), ConstraintSet.BOTTOM);
-                set.connect(textView.getId(), ConstraintSet.TOP, imageView.getId(), ConstraintSet.BOTTOM);
-                set.connect(textView.getId(), ConstraintSet.LEFT, coinView.getId(), ConstraintSet.RIGHT);
-                set.applyTo(layout);
+                Connector.create(layout)
+                        .connect(coinView, Connector.TOP, imageView)
+                        .connect(textView, Connector.TOP, imageView)
+                        .connect(textView, Connector.LEFT, coinView)
+                        .finish();
             }
         }
     }
 
-    /**
-     * Zamienia dp na px
-     *
-     * @param dp ustawiane dp
-     * @return piksele
-     */
-    static int dp(int dp) {
-        return (int) (Resources.getSystem().getDisplayMetrics().density * dp);
+
+    public void dressUpHero(Clothes clothes) {
+        ViewUtils.dressUpHero(this, heroLayout, heroView, clothes);
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)//TODO pozbyć się RequiresApi
-    private <T extends View> T prepare(T view, ViewGroup parent, int x, int y) {
-        view.setLayoutParams(new ConstraintLayout.LayoutParams(dp(x), dp(y)));
-        view.setId(View.generateViewId());
-        parent.addView(view);
-        return view;
-    }
     /**
      * Tworzy HorizontalScrollView, dodaje go do głównego ScrollView i zwraca swój LinearLayout
      * @return LinearLayout wewnątrz nowoutworzonego HorizontalScrollView
@@ -189,16 +210,5 @@ public class ClothesShopActivity extends AppCompatActivity {
         scroll.addView(linearLayout);
 
         return linearLayout;
-    }
-    /**
-     * Tworzy ImageView
-     *
-     * @param drawable obrazek
-     * @return utworzone ImageView
-     */
-    private ImageView createImage(int drawable) {
-        ImageView view = new ImageView(this);
-        view.setImageDrawable(ActivityCompat.getDrawable(this, drawable));
-        return view;
     }
 }

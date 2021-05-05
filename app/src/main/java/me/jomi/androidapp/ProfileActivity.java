@@ -1,65 +1,108 @@
 package me.jomi.androidapp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.util.Consumer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import me.jomi.androidapp.api.Api;
+import me.jomi.androidapp.games.Game;
+import me.jomi.androidapp.games.GameRow;
+import me.jomi.androidapp.listeners.DatabaseChangeListener;
 import me.jomi.androidapp.model.Clothes;
 import me.jomi.androidapp.model.User;
+import me.jomi.androidapp.util.ViewUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Info
+    ConstraintLayout mainLayout;
     TextView moneyView;
     TextView energyView;
+    ProgressBar energyBar;
 
     // Hero
     ImageView heroView;
-
-    // Clothes
-    ImageView dressView;
-    ImageView pantsView;
+    ConstraintLayout heroLayout;
 
     // Buttons
     ImageView shopView;
     ImageView gamesView;
     ImageView realActivityView;
 
+    // Games
+    ScrollView gamesScroll;
+    List<GameRow> gameRowList = new ArrayList<>();
 
-    static ProfileActivity instance;
-    public static ProfileActivity getInstance() {
-        return instance;
-    }
+    // Settings
+    ImageView settingsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        instance = this;
-
         setContentView(R.layout.activity_profile);
+
+        Settings.load();
 
         moneyView  = findViewById(R.id.profile_money_TextView);
         energyView = findViewById(R.id.profile_energy_TextView);
+        energyBar  = findViewById(R.id.profile_energy_ProgressBar);
         heroView   = findViewById(R.id.profile_hero_ImageView);
-        dressView  = findViewById(R.id.profile_cloth_dress_ImageView);
-        pantsView  = findViewById(R.id.profile_cloth_pants_ImageView);
+        heroLayout = findViewById(R.id.profile_hero_layout);
+        mainLayout = findViewById(R.id.profile_mainLayout);
 
         shopView         = findViewById(R.id.profile_shop_ImageView);
         gamesView        = findViewById(R.id.profile_games_ImageView);
         realActivityView = findViewById(R.id.profile_realActivity_ImageView);
 
+        gamesScroll = findViewById(R.id.profile_games_scroll);
+
+        settingsView = findViewById(R.id.profile_settings_ImageView);
+
+
         shopView.setOnClickListener(this);
         gamesView.setOnClickListener(this);
+        settingsView.setOnClickListener(this);
         realActivityView.setOnClickListener(this);
+
+        DatabaseChangeListener.CLOTHES.register(this.getClass(), new Consumer<Clothes>() { public void accept(Clothes clothes) { dressUp(clothes);      }});
+        DatabaseChangeListener.ENERGY .register(this.getClass(), new Consumer<Float>()   { public void accept(Float energy)    { refreshEnergy(energy); }});
+        DatabaseChangeListener.MONEY  .register(this.getClass(), new Consumer<Integer>() { public void accept(Integer money)   { refreshMoney(money);   }});
+
+
+        gamesView.post(new Runnable() {
+            @Override
+            public void run() {
+                mainLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        gamesScroll.getLayoutParams().height = mainLayout.getHeight() - gamesView.getHeight();
+                    }
+                });
+            }
+        });
+
+        gameRowList.clear();
+        ((LinearLayout) gamesScroll.getChildAt(0)).removeAllViews();
+        for (Game game : Game.values()) {
+            GameRow gameRow = new GameRow(this, game);
+            gameRowList.add(gameRow);
+            ((LinearLayout) gamesScroll.getChildAt(0)).addView(gameRow.layout);
+        }
+
 
         refreshAll();
     }
@@ -68,14 +111,48 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (v.getId() == shopView.getId()) {
             startActivity(new Intent(this, ClothesShopActivity.class));
         } else if (v.getId() == gamesView.getId()) {
-            // TODO games
+            final boolean visible = gamesScroll.getVisibility() == ScrollView.VISIBLE;
+                gamesScroll.animate()
+                .alpha(visible ? 0 : 1)
+                .setDuration(750)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        if (!visible)
+                            gamesScroll.setVisibility(ScrollView.VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (visible)
+                            gamesScroll.setVisibility(ScrollView.INVISIBLE);
+                    }
+                });
         } else if (v.getId() == realActivityView.getId()) {
             startActivity(new Intent(this, UserProfile.class));
+        } else if (v.getId() == settingsView.getId()) {
+            startActivity(new Intent(this, SettingsActivity.class));
         } else {
             System.err.println("Nieznane View w ProfileActivity " + v);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        System.out.println("Touch ");
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Settings.needSave)
+            Settings.saveNow();
+    }
 
     public void refreshAll() {
         Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -94,78 +171,21 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         refreshEnergy(user.getEnergy());
         dressUp(user.getClothes());
     }
-    public void refreshMoney() {
-        refresh(moneyView, "Monety", "money", int.class);
-    }
     public void refreshMoney(int money) {
-        refresh(moneyView, "Monety", money);
-    }
-    public void refreshEnergy() {
-        refresh(energyView, "Energia", "energy", float.class);
+        moneyView.setText("Monety: " + money);
     }
     public void refreshEnergy(float energy) {
-        refresh(energyView, "Energia", energy);
-    }
-    private void refresh(final TextView view, final String prefix, String child, final Class<?> clazz) {
-        Api.getUser().child(child).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
-                    refresh(view, prefix, task.getResult().getValue(clazz));
-            }
-        });
-    }
-    private void refresh(TextView view, String prefix, Object value) {
-        view.setText(prefix + ": " + value);
+        energyBar.setProgress((int) energy);
+        energyView.setText(String.valueOf((int) energy));
+
+        for (GameRow gameRow : gameRowList)
+            gameRow.setUnlocked(energy >= gameRow.game.energy);
+
     }
 
 
-    /**
-     * Ubiera bohatera w ubrania znelezione w bazie
-     */
-    public void dressUp() {
-        Api.getUser().child("clothes").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
-                    Clothes clothes = task.getResult().getValue(Clothes.class);
-                    dressUp(clothes);
-                }
-            }
-        });
-    }
-
-    /**
-     * Ubiera bohatera w podane ubrania
-     *
-     * @param clothes ubrania w które ma się ubrać
-     */
     public void dressUp(Clothes clothes) {
-        dressUp(pantsView, "pants", clothes.getPants());
-        dressUp(dressView, "dress", clothes.getDress());
+        ViewUtils.dressUpHero(this, heroLayout, heroView, clothes);
     }
-    /**
-     * Ustawia odpowidni obrazek (z /res/drawable wybiera ten o nazwie prefix + version) </br>
-     * jeśli {@code version == 0} ukrywa view
-     *
-     * @param view na którym będzie zakładane ubranie
-     * @param prefix nazwy w /res/drawable
-     * @param version numer dodany po nazwie (bez spacji) w /res/drawable
-     */
-    private void dressUp(ImageView view, String prefix, int version) {
-        if (version == 0)
-            view.setVisibility(ImageView.INVISIBLE);
-        else {
-            int id = -1;
-            try {
-                id = (int) R.drawable.class.getDeclaredField(prefix + version).get(null);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            view.setImageDrawable(ActivityCompat.getDrawable(this, id));
-            view.setVisibility(ImageView.VISIBLE);
-        }
-    }
+
 }
