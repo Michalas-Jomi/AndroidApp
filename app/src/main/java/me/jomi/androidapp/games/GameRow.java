@@ -2,42 +2,57 @@ package me.jomi.androidapp.games;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import me.jomi.androidapp.R;
 import me.jomi.androidapp.util.ViewUtils;
+import me.jomi.androidapp.util.ViewUtils.Connector;
 
 import java.util.Random;
 
-public class GameRow implements View.OnClickListener {
+public class GameRow implements View.OnClickListener, View.OnLongClickListener {
     public final ConstraintLayout layout;
 
     public final Game game;
 
-    public final TextView textView;
+    //public final TextView textView;
     public final ImageView imageView;
 
     private boolean unlocked;
 
-    public GameRow(Context context, Game game) {
+    private final Context context;
+
+
+    public GameRow(Context context, Game game, ConstraintLayout parent) {
+        this.context = context;
         this.game = game;
 
-        layout = new ConstraintLayout(context);
 
-        imageView = ViewUtils.prepareToConstraintSet(ViewUtils.createImage(context, R.drawable.shop_icon), layout, 200, 80);
+        layout = ViewUtils.prepareToConstraintSet(new ConstraintLayout(context), parent, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
 
-        String text = game.name().toLowerCase().replace("_", " ") + " " + ((int) game.energy) + " energi";
-        textView = ViewUtils.prepareToConstraintSet(ViewUtils.createTextView(context, text), layout, 200, 20);
+
+        imageView = ViewUtils.prepareToConstraintSet(ViewUtils.createImage(context, R.drawable.maker), layout, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
 
         layout.setOnClickListener(this);
+        layout.setOnLongClickListener(this);
 
-        ViewUtils.Connector.create(layout)
-                .connect(textView, ViewUtils.Connector.TOP, imageView)
-                .connectWithParent(textView, ViewUtils.Connector.LEFT)
-                .connectWithParent(imageView, ViewUtils.Connector.TOP)
-                .connectWithParent(imageView, ViewUtils.Connector.LEFT)
+        Connector.create(layout)
+                .connectWithParent(imageView, Connector.TOP)
+                .connectWithParent(imageView, Connector.LEFT)
+                .connectWithParent(imageView, Connector.RIGHT)
+                .finish();
+
+        Connector.create(parent)
+                .connectWithParent(layout, Connector.LEFT)
+                .connectWithParent(layout, Connector.RIGHT)
+                .connectWithParent(layout, Connector.TOP)
+                .connectWithParent(layout, Connector.BOTTOM)
+                .biasX(layout, game.x)
+                .biasY(layout, game.y)
                 .finish();
 
         setUnlocked(false);
@@ -59,5 +74,11 @@ public class GameRow implements View.OnClickListener {
     public void onClick(View v) {
         if (unlocked)
             game.start();
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        ViewUtils.toast(context, game.name().toLowerCase().replace("_", " ") + "\n" + ((int) game.energy) + " energi");
+        return true;
     }
 }

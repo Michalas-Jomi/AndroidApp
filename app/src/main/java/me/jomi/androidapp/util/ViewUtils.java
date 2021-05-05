@@ -178,6 +178,15 @@ public class ViewUtils {
             return connect(start, sideStart, end, sideEnd);
         }
 
+        public Connector biasX(View view, float bias) {
+            constraintSet.setHorizontalBias(view.getId(), bias);
+            return this;
+        }
+        public Connector biasY(View view, float bias) {
+            constraintSet.setVerticalBias(view.getId(), bias);
+            return this;
+        }
+
         public void finish() {
             constraintSet.applyTo(layout);
         }

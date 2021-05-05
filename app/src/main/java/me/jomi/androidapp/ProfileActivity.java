@@ -21,6 +21,7 @@ import me.jomi.androidapp.listeners.DatabaseChangeListener;
 import me.jomi.androidapp.model.Clothes;
 import me.jomi.androidapp.model.User;
 import me.jomi.androidapp.util.ViewUtils;
+import me.jomi.androidapp.util.ViewUtils.Connector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     ImageView realActivityView;
 
     // Games
-    ScrollView gamesScroll;
+    ConstraintLayout gamesMapLayout;
+    ImageView gamesMapView;
     List<GameRow> gameRowList = new ArrayList<>();
 
     // Settings
@@ -68,7 +70,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         gamesView        = findViewById(R.id.profile_games_ImageView);
         realActivityView = findViewById(R.id.profile_realActivity_ImageView);
 
-        gamesScroll = findViewById(R.id.profile_games_scroll);
+        gamesMapLayout = findViewById(R.id.profile_games_mapLayout);
+        gamesMapView   = findViewById(R.id.profile_games_map_ImageView);
 
         settingsView = findViewById(R.id.profile_settings_ImageView);
 
@@ -83,25 +86,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         DatabaseChangeListener.MONEY  .register(this.getClass(), new Consumer<Integer>() { public void accept(Integer money)   { refreshMoney(money);   }});
 
 
-        gamesView.post(new Runnable() {
-            @Override
-            public void run() {
-                mainLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        gamesScroll.getLayoutParams().height = mainLayout.getHeight() - gamesView.getHeight();
-                    }
-                });
-            }
-        });
 
         gameRowList.clear();
-        ((LinearLayout) gamesScroll.getChildAt(0)).removeAllViews();
-        for (Game game : Game.values()) {
-            GameRow gameRow = new GameRow(this, game);
-            gameRowList.add(gameRow);
-            ((LinearLayout) gamesScroll.getChildAt(0)).addView(gameRow.layout);
-        }
+        gamesMapLayout.removeAllViews();
+        gamesMapLayout.addView(gamesMapView);
+        Connector.create(gamesMapLayout)
+                .connectWithParent(gamesMapView, Connector.TOP)
+                .connectWithParent(gamesMapView, Connector.BOTTOM)
+                .connectWithParent(gamesMapView, Connector.LEFT)
+                .connectWithParent(gamesMapView, Connector.RIGHT)
+                .finish();
+        for (Game game : Game.values())
+            gameRowList.add(new GameRow(this, game, gamesMapLayout));
 
 
         refreshAll();
@@ -111,20 +107,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (v.getId() == shopView.getId()) {
             startActivity(new Intent(this, ClothesShopActivity.class));
         } else if (v.getId() == gamesView.getId()) {
-            final boolean visible = gamesScroll.getVisibility() == ScrollView.VISIBLE;
-                gamesScroll.animate()
+            final boolean visible = gamesMapLayout.getVisibility() == ScrollView.VISIBLE;
+            gamesMapLayout.animate()
                 .alpha(visible ? 0 : 1)
                 .setDuration(750)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
                         if (!visible)
-                            gamesScroll.setVisibility(ScrollView.VISIBLE);
+                            gamesMapLayout.setVisibility(ScrollView.VISIBLE);
                     }
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (visible)
-                            gamesScroll.setVisibility(ScrollView.INVISIBLE);
+                            gamesMapLayout.setVisibility(ScrollView.INVISIBLE);
                     }
                 });
         } else if (v.getId() == realActivityView.getId()) {
@@ -139,12 +135,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onBackPressed() {
 
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        System.out.println("Touch ");
-        return super.onTouchEvent(event);
     }
 
     @Override
