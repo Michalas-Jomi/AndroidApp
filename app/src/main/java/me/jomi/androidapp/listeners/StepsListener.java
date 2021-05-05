@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.Toast;
 import me.jomi.androidapp.MainActivity;
+import me.jomi.androidapp.util.Energy;
 
 import java.util.List;
 
@@ -37,12 +38,14 @@ public class StepsListener implements SensorEventListener {
 
                     if (MagnitudeDelta > 5){
                         steps++;
+                        if(steps%100 == 0 && steps != 0) Energy.addEnergy(steps * 0.0001f);
                     }
-                    System.out.println(steps);
+              //      System.out.println(steps);
                 }
                 break;
         }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {

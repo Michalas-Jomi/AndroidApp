@@ -19,6 +19,7 @@ import me.jomi.androidapp.model.UserActivity;
 
 import static me.jomi.androidapp.MainActivity.locListener;
 import static me.jomi.androidapp.MainActivity.locationManager;
+import static me.jomi.androidapp.util.Energy.addEnergy;
 
 public class LocListener implements LocationListener {
 
@@ -29,37 +30,44 @@ public class LocListener implements LocationListener {
     public void onLocationChanged(final Location location) {
         final double currentLatitude = location.getLatitude();
         final double currentLongitude = location.getLongitude();
-        UserProfile.locCoords.setText(currentLatitude + "\n" + currentLongitude);
+
         final double[] lastLatitude = new double[1];
         final double[] lastLongitude = new double[1];
 
-        switch (UserProfile.userActivity){
-            case RUNNING:
+        Api.getUser().child("location").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    for (DataSnapshot data : task.getResult().getChildren())
+                        if (data.getKey().equals("latitude")) lastLatitude[0] = data.getValue(Double.class);
+                        else lastLongitude[0] = data.getValue(Double.class);
 
-            case BIKING:
-                Api.getUser().child("location").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(Task<DataSnapshot> task) {
-                        if(task.isSuccessful()) {
-                            for (DataSnapshot data : task.getResult().getChildren())
-                                if (data.getKey().equals("latitude")) lastLatitude[0] = data.getValue(Double.class);
-                                else lastLongitude[0] = data.getValue(Double.class);
+                    Api.getUser().child("location").setValue(new me.jomi.androidapp.model.Location(currentLatitude, currentLongitude));
+                    if(lastLatitude[0] == 0 && lastLongitude[0] == 0) return;
 
-                            Api.getUser().child("location").setValue(new me.jomi.androidapp.model.Location(currentLatitude, currentLongitude));
-
-                            if(lastLatitude[0] == 0 && lastLongitude[0] == 0) return;
-
-                            float changedDistance = distFrom((float) currentLatitude, (float) currentLongitude, (float) lastLatitude[0], (float) lastLongitude[0]);
-                            UserProfile.locCoords.setText(currentLatitude + "\n" + currentLongitude + "\n" + changedDistance);
-                            System.out.println(changedDistance);;
-                        }
+                    float changedDistance = distFrom((float) currentLatitude, (float) currentLongitude, (float) lastLatitude[0], (float) lastLongitude[0]);
+                    System.out.println(changedDistance);
+                    if(changedDistance > 1000 || changedDistance == 0) return; // jezeli bedzie wieksza od 1000metrow, moze to byc zbyt szybkie, albo osoba odpalila apke po pokonaniu bardzo duzego dystansu
+                    switch (UserProfile.userActivity){
+                        case RUNNING:
+                            addEnergy(changedDistance * 0.001f);
+                            break;
+                        case CYCLING:
+                            addEnergy(changedDistance * 0.0005f);
+                            break;
+                        case FOOTBALL:
+                            addEnergy(changedDistance * 0.0099f);
+                            break;
+                        case NONE:
                     }
-                });
 
-            case NONE:
-        }
+                }
+            }
+        });
+
       //  System.out.println("Latitude" + location.getLatitude() + " Longitude" + location.getLongitude());
    }
+
 
     private float distFrom(float lat1, float lng1, float lat2, float lng2) {
         double earthRadius = 6371000; //meters

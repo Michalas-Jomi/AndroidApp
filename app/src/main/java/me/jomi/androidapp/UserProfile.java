@@ -16,16 +16,19 @@ import me.jomi.androidapp.model.UserActivity;
 import static me.jomi.androidapp.MainActivity.locListener;
 import static me.jomi.androidapp.MainActivity.stepsListener;
 
-public class UserProfile extends AppCompatActivity implements View.OnClickListener {
+public class UserProfile extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 
-    private Button buttonLogout;
-    private Button checkLocation;
-    private Switch locSwitch;
-    public static TextView locCoords;
+
+
+
     private static final int PERMISSION_LOCATION = 1001;
     private static final int PERMISSION_STEPS = 1000;
-    public static UserActivity userActivity = UserActivity.BIKING;
+    public static UserActivity userActivity = UserActivity.NONE;
+    private Switch cyclingSwitch;
+    private Switch runningSwitch;
+    private Switch footballSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,36 +38,19 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         ActivityCompat.requestPermissions(this, new String[]{"com.google.android.gms.permission.ACTIVITY_RECOGNITION", Manifest.permission.ACTIVITY_RECOGNITION}, PERMISSION_STEPS);
         //ActivityCompat.requestPermissions(this, new String[]{}, PERMISSION_STEPS);
 
-        buttonLogout = findViewById(R.id.buttonUserProfileLogout);
-        buttonLogout.setOnClickListener(this);
 
-        checkLocation = findViewById(R.id.checkLocation);
-        checkLocation.setOnClickListener(this);
+        cyclingSwitch = findViewById(R.id.user_cycling_switch);
+        cyclingSwitch.setOnCheckedChangeListener(this);
+        runningSwitch = findViewById(R.id.user_running_switch);
+        runningSwitch.setOnCheckedChangeListener(this);
+        footballSwitch = findViewById(R.id.user_football_switch);
+        footballSwitch.setOnCheckedChangeListener(this);
+        cyclingSwitch.setChecked(false);
+        runningSwitch.setChecked(false);
+        footballSwitch.setChecked(false);
 
-        locSwitch = findViewById(R.id.simpleSwitch);
-
-        locCoords = findViewById(R.id.locCoordText);
-
-        locSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(locSwitch.isChecked()) {
-                    if (ContextCompat.checkSelfPermission(UserProfile.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-                        locSwitch.setChecked(false);
-                        ActivityCompat.requestPermissions(UserProfile.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-                    } else {
-                        locListener.registerListener();
-                        if (!locListener.isEnabled())
-                            locSwitch.setChecked(false);
-                    }
-                } else {
-                    locListener.unregisterListener();
-                }
-            }
-        });
-        locSwitch.setChecked(locListener.isEnabled());
     }
-//uzywa sie, gdy po prostu mamy permisje i tyle
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -88,19 +74,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch(v.getId()){
-            case R.id.buttonUserProfileLogout:
-                AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(Task<Void> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(UserProfile.this, "Pomyślnie zostałeś wylogowany", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-                break;
-            case R.id.checkLocation:
-                requestLocationPermissions();
-                break;
 
         }
     }
@@ -110,6 +83,50 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(!canActivity()) return;
+        // ustawia tak jakby aktualny stan wszystkich byl bez uwzglednienia aktualnej zmiany, zeby bramka mogla przejsc poprawnie.
+         if(buttonView.isChecked()) buttonView.setChecked(false);
+         else buttonView.setChecked(true);
+
+        if(cyclingSwitch.isChecked() || runningSwitch.isChecked() || footballSwitch.isChecked()){
+
+            if(buttonView.isChecked())
+                userActivity = UserActivity.NONE;
+
+            buttonView.setChecked(false);
+            return;
+        }
+
+            buttonView.setChecked(true);
+            switch (buttonView.getId()) {
+                case R.id.user_cycling_switch:
+                    userActivity = UserActivity.CYCLING;
+                    break;
+                case R.id.user_football_switch:
+                    userActivity = UserActivity.FOOTBALL;
+                    break;
+                case R.id.user_running_switch:
+                    userActivity = UserActivity.RUNNING;
+                    break;
 
 
+        }
+    }
+
+   private boolean canActivity(){
+        boolean canCheckOn = false;
+
+       if (ContextCompat.checkSelfPermission(UserProfile.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+           ActivityCompat.requestPermissions(UserProfile.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+
+       } else {
+           locListener.registerListener();
+           canCheckOn = true;
+
+       }
+
+       return canCheckOn;
+   }
 }
