@@ -16,6 +16,11 @@ import me.jomi.androidapp.api.Api;
 import me.jomi.androidapp.model.Clothes;
 import me.jomi.androidapp.model.Location;
 import me.jomi.androidapp.model.User;
+import org.jetbrains.annotations.NotNull;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AuthStateListener implements FirebaseAuth.AuthStateListener {
 
@@ -36,9 +41,8 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
                 @Override
                 public void onComplete(Task<DataSnapshot> task) {
                     if(task.isSuccessful()){
-
                         if(!task.getResult().exists())
-                            Api.getUser().setValue(new User(0, 100, new Location((double) 0, (double) 0), new Clothes(0, 0)))
+                            Api.getUser().setValue(new User(0, 100, new Location(0, 0), new Clothes(0, 0), new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())))
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(Task<Void> task) {
@@ -64,5 +68,21 @@ public class AuthStateListener implements FirebaseAuth.AuthStateListener {
             databaseChangeListener = new DatabaseChangeListener();
             databaseChangeListener.register();
         }
+        setupDaily();
     }
+
+    private void setupDaily(){
+        Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    User user = task.getResult().getValue(User.class);
+                    user.setLastLogin(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+
+                    Api.getUser().setValue(user);
+                }
+            }
+        });
+    }
+
 }

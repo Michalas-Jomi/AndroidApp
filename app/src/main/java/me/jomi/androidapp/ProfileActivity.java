@@ -8,11 +8,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Consumer;
+import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import me.jomi.androidapp.api.Api;
 import me.jomi.androidapp.games.Game;
@@ -22,11 +26,14 @@ import me.jomi.androidapp.model.Clothes;
 import me.jomi.androidapp.model.User;
 import me.jomi.androidapp.util.ViewUtils;
 import me.jomi.androidapp.util.ViewUtils.Connector;
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+
+
 
     // Info
     ConstraintLayout mainLayout;
@@ -143,7 +150,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (Settings.needSave)
             Settings.saveNow();
     }
-
     public void refreshAll() {
         Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override

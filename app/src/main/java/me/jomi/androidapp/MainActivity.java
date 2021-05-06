@@ -18,10 +18,6 @@ public class MainActivity extends AppCompatActivity  {
     public static StepsListener stepsListener;
     public static LocationManager locationManager;
 
-    //TODO: sprawdzic czy sensor kroków działa i poprawnie zapisuje
-    //TODO: real time location tracking (google firebase) https://www.youtube.com/watch?v=17HqLBkuX-E
-    //TODO: wybiera sie forme jaka sie robi i liczy, czyli np jezdzenie rowerem. I od tego momentu database listener bedzie nasluchiwac na
-    // zmiany w lokacji i robic konkretne obliczenia ile sie przejechalo od momentu wlaczenia.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

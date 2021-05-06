@@ -5,18 +5,29 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.firebase.ui.auth.AuthUI;
+import androidx.core.util.Consumer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import me.jomi.androidapp.api.Api;
+import me.jomi.androidapp.games.GameRow;
+import me.jomi.androidapp.listeners.DatabaseChangeListener;
+import me.jomi.androidapp.listeners.StepsListener;
+import me.jomi.androidapp.model.User;
 import me.jomi.androidapp.model.UserActivity;
+import org.jetbrains.annotations.NotNull;
 
 import static me.jomi.androidapp.MainActivity.locListener;
 import static me.jomi.androidapp.MainActivity.stepsListener;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+
+
 
 
 
@@ -28,6 +39,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private Switch cyclingSwitch;
     private Switch runningSwitch;
     private Switch footballSwitch;
+    private TextView stepsCount;
+    private TextView energyTextView;
+    private CircularProgressBar steps_circularProgressBar;
+    private ProgressBar progressBar;
+    private User user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +66,41 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         runningSwitch.setChecked(false);
         footballSwitch.setChecked(false);
 
+        if(userActivity == UserActivity.CYCLING) cyclingSwitch.setChecked(true);
+        if(userActivity == UserActivity.RUNNING) runningSwitch.setChecked(true);
+        if(userActivity == UserActivity.FOOTBALL) footballSwitch.setChecked(true);
+
+
+        steps_circularProgressBar = findViewById(R.id.user_steps_circularProgressBar);
+        steps_circularProgressBar.setProgressMax(5000);
+        steps_circularProgressBar.setProgress(StepsListener.steps > 5000 ? 5000 : StepsListener.steps);
+        stepsCount = findViewById(R.id.user_steps_count);
+        stepsCount.setText(String.valueOf(StepsListener.steps));
+        energyTextView = findViewById(R.id.user_energy_textview);
+        progressBar = findViewById(R.id.user_horizontalbar_progressbar);
+        DatabaseChangeListener.ENERGY .register(this.getClass(), new Consumer<Float>()   { public void accept(Float energy)    { refreshEnergy(energy); }});
+
+        refresh();
+    }
+
+    public void refresh(){
+        Api.getUser().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    user = (task.getResult().getValue(User.class));
+                    energyTextView.setText("Posiadana energia: " +((int) user.getEnergy()) + "%");
+                    progressBar.setProgress((int) user.getEnergy());
+
+
+                }
+            }
+        });
+    }
+
+    public void refreshEnergy(float energy) {
+        progressBar.setProgress((int) energy);
+        energyTextView.setText("Posiadana energia: " +((int) energy) + "%");
     }
 
     @Override

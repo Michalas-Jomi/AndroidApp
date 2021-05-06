@@ -14,7 +14,7 @@ import java.util.List;
 public class StepsListener implements SensorEventListener {
 
     private SensorManager sensorManager;
-    private int steps = 0;
+    public static int steps = 0;
     private boolean registered = false;
 
     private double MagnitudePrevious = 0;

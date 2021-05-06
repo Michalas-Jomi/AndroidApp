@@ -13,8 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import me.jomi.androidapp.MainActivity;
 import me.jomi.androidapp.R;
+import me.jomi.androidapp.api.Api;
 import me.jomi.androidapp.model.Clothes;
 
 import java.util.ArrayList;
@@ -53,6 +57,17 @@ public class ViewUtils {
         Toast.makeText(context, text, text.length() >= 50 ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
     }
 
+    public static void greetings(final Context context, final String text){
+        Api.getUser().child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(context, text, text.length() >= 50 ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
     /**
      * Zamienia dp na px
      *
@@ -62,6 +77,9 @@ public class ViewUtils {
     public static int dp(int dp) {
         return (int) (Resources.getSystem().getDisplayMetrics().density * dp);
     }
+
+
+
 
 
     public static ImageView createImage(Context context, int drawable) {
