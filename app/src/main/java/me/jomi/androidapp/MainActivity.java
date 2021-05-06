@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity  {
     protected void onStart() {
         super.onStart();
         instance = this;
+
         Api.auth.addAuthStateListener(new AuthStateListener());
         locListener = new LocListener();
         stepsListener = new StepsListener();
